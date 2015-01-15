@@ -9,6 +9,7 @@ declare result refcursor;
 begin
 	open result for
 	select
+		T1.from_node, T1.to_node,
 		st_x(T2.geom) from_lng, st_y(T2.geom) from_lat,
 		st_x(T3.geom) to_lng, st_y(T3.geom) to_lat,
 		T4.section_id,

@@ -42,7 +42,7 @@ public class GPS2PostgreImporter {
 							java.sql.Types.DOUBLE);
 					insert_into_stmt.setObject(4, words[3],
 							java.sql.Types.BOOLEAN);
-					insert_into_stmt.setObject(5, words[4]);
+					insert_into_stmt.setObject(5, words[4], java.sql.Types.BIGINT);
 					insert_into_stmt.addBatch();
 					++cnt;
 					if (cnt % batch_size == 0) {
