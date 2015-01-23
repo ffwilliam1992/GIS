@@ -29,7 +29,7 @@
 	<classpathentry kind="lib" path="lib/osmosis-tagtransform-0.43.1.jar"/>
 	<classpathentry kind="lib" path="lib/osmosis-xml-0.43.1.jar" sourcepath="C:/Users/tx/Downloads/osmosis-master/osmosis-xml/src"/>
 	<classpathentry kind="lib" path="lib/plexus-classworlds-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/postgis-jdbc-1.3.3.jar"/>
+	<classpathentry kind="lib" path="lib/postgis-jdbc-1.3.3.jar" sourcepath="C:/Users/I305788/.m2/repository/org/postgis/postgis-jdbc/1.3.3/postgis-jdbc-1.3.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql-9.1-901-1.jdbc4.jar" sourcepath="C:/Users/tx/.m2/repository/postgresql/postgresql/9.1-901-1.jdbc4/postgresql-9.1-901-1.jdbc4-sources.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf-java-2.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/spring-aop-3.1.2.RELEASE.jar"/>
