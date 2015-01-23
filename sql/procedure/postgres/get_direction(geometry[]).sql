@@ -15,6 +15,9 @@ begin
 		j = i+1;
 		v_cur_x = st_x(v_points[j]) - st_x(v_points[i]);
 		v_cur_y = st_y(v_points[j]) - st_y(v_points[i]);
+		if(v_cur_x=0 and v_cur_y=0) then
+			continue;
+		end if;
 		v_cur_x = v_cur_x / (|/(v_cur_x*v_cur_x + v_cur_y*v_cur_y));
 		v_cur_y = v_cur_y / (|/(v_cur_x*v_cur_x + v_cur_y*v_cur_y));
 		v_x = v_x + v_cur_x;
