@@ -40,6 +40,7 @@ from
 	taxi.highway_types
 where
 	type in ('living_street', 'motorway',
+		'motorway_link',
 		'primary', 'primary_link',
 		'residential', 'secondary',
 		'tertiary', 'trunk',

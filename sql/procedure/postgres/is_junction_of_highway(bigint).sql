@@ -21,7 +21,11 @@ begin
 				ways
 			where
 				id = way_id and 
-				tags ? 'highway'
+				tags -> 'highway' in (
+					select type from taxi.highway_types
+					where
+						id in (select id from taxi.driving_highway_types)
+				)
 		)
 	into
 		count

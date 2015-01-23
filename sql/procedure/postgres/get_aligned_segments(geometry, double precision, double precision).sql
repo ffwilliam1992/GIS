@@ -32,6 +32,11 @@ begin
 		--same direction
 		(st_x(T6.geom)-st_x(T5.geom)) * v_x
 			+ (st_y(T6.geom)-st_y(T5.geom)) * v_y  >= 0 and
+		((st_x(T6.geom)-st_x(T5.geom)) * v_x
+			+ (st_y(T6.geom)-st_y(T5.geom)) * v_y
+		)/sqrt((st_x(T6.geom)-st_x(T5.geom))*(st_x(T6.geom)-st_x(T5.geom))
+				+ (st_y(T6.geom)-st_y(T5.geom))*(st_y(T6.geom)-st_y(T5.geom)))
+		>= 0.707106 and
 		--projection is on segment
 		(st_x(v_point)-st_x(T5.geom)) * (st_x(T6.geom)-st_x(T5.geom))
 			+ (st_y(v_point)-st_y(T5.geom)) * (st_y(T6.geom)-st_y(T5.geom)) >= 0 and
@@ -69,6 +74,12 @@ begin
 		--same direction
 		(st_x(T6.geom)-st_x(T5.geom)) * v_x
 			+ (st_y(T6.geom)-st_y(T5.geom)) * v_y  >= 0 and
+		((st_x(T6.geom)-st_x(T5.geom)) * v_x 
+			+ (st_y(T6.geom)-st_y(T5.geom)) * v_y)
+		/sqrt(
+			(st_x(T6.geom)-st_x(T5.geom))*(st_x(T6.geom)-st_x(T5.geom))
+			+ (st_y(T6.geom)-st_y(T5.geom))*(st_y(T6.geom)-st_y(T5.geom))
+		) >= 0.707106 and
 		--projection is on segment
 		not (
 		(st_x(v_point)-st_x(T5.geom)) * (st_x(T6.geom)-st_x(T5.geom))
@@ -109,6 +120,11 @@ begin
 		abs(st_y(v_point) - (st_y(T5.geom) + st_y(T6.geom))/2) <= 0.0015 and
 		st_distance_sphere(v_point, st_makeline(T5.geom, T6.geom)) < 20
 	order by
+		abs((st_x(T6.geom)-st_x(T5.geom))*v_x + (st_y(T6.geom)-st_y(T5.geom))*v_y)
+		/ sqrt(
+			(st_x(T6.geom)-st_x(T6.geom))*(st_x(T6.geom)-st_x(T6.geom))
+			+(st_y(T6.geom)-st_y(T5.geom))*(st_y(T6.geom)-st_y(T5.geom)
+		)) desc,
 		st_distance_sphere(v_point, st_makeline(T5.geom, T6.geom))
 		--abs(st_x(v_point) - (st_x(T5.geom) + st_x(T6.geom))/2),
 		--abs(st_y(v_point) - (st_y(T5.geom) + st_y(T6.geom))/2)
