@@ -46,3 +46,29 @@ where
 		'tertiary', 'trunk',
 		'trunk_link','unclassified')
 ;
+drop table if exists taxi.edges;
+CREATE TABLE taxi.edges(
+  id bigint NOT NULL,
+  source bigint,
+  target bigint,
+  len double precision,
+  rlen double precision,
+  x1 double precision,
+  y1 double precision,
+  x2 double precision,
+  y2 double precision,
+  the_geom geometry(LineString,4326),
+  maxspeed double precision,
+  speed_kph double precision,
+  cost_len double precision,
+  cost_time double precision,
+  rcost_len double precision,
+  rcost_time double precision,
+  to_cost double precision,
+  rule text,
+  isolated integer,
+  CONSTRAINT edges_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);

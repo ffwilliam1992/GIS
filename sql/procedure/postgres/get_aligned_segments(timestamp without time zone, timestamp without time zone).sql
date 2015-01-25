@@ -10,6 +10,7 @@ $BODY$
 declare v_result record;
 declare v_traces refcursor;
 declare v_trace_record record;
+declare v_pre_id taxi.gps_raw.id%type;
 declare v_pre_trace geometry(Point,4326)[];
 declare v_nxt_trace geometry(Point,4326)[];
 declare v_pre_state boolean := false;
@@ -34,6 +35,11 @@ begin
 			T.id, timestamp
 	)
 	loop
+		if(v_trace_record.id <> v_pre_id) then
+			v_pre_state = false;
+			v_pre_trace = null;
+			v_pre_id = v_trace_record.id;
+		end if;	
 		--discard traces whose boarding position is not determinate
 		if (v_pre_state=false and
 			v_trace_record.state and
