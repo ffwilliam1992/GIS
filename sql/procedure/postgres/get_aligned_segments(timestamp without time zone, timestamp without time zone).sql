@@ -35,7 +35,7 @@ begin
 			T.id, timestamp
 	)
 	loop
-		if(v_trace_record.id <> v_pre_id) then
+		if(v_trace_record.id <> v_pre_id or v_pre_id is null) then
 			v_pre_state = false;
 			v_pre_trace = null;
 			v_pre_id = v_trace_record.id;
@@ -45,17 +45,30 @@ begin
 			v_trace_record.state and
 			array_upper(v_pre_trace, 1) is null) then
 			continue;
+		end if;
+		--discard continuous identical record
+		if (v_pre_trace[array_length(v_pre_trace, 1)] = v_trace_record.point and
+			v_pre_state=false and
+			v_trace_record.state=false) then
+			continue;
 		--continuous uncarried state
 		elseif (v_pre_state=false and v_trace_record.state=false) then
 			if(array_upper(v_pre_trace, 1) < 3 or 
 				array_upper(v_pre_trace, 1) is null) then
 				v_pre_trace := array_append(v_pre_trace, v_trace_record.point);
 				raise notice 'trace %', array_length(v_pre_trace, 1);
+			else
+				v_pre_trace := v_pre_trace[2:array_length(v_pre_trace, 1)];
+				v_pre_trace = array_append(v_pre_trace, v_trace_record.point);
 			end if;
 		--from uncarried to carried
 		elseif (v_pre_state=false and v_trace_record.state) then
-			v_pre_trace = array_append(v_pre_trace, v_trace_record.point);
+			if (not v_pre_trace[array_length(v_pre_trace, 1)] = v_trace_record.point) then
+				v_pre_trace = array_append(v_pre_trace, v_trace_record.point);
+			end if;
+			raise notice 'v_trace_record %', array_length(v_pre_trace, 1);
 			select * from taxi.get_direction(v_pre_trace) into v_direction;
+			raise notice 'direction %', v_direction;
 			for v_aligned_segment in
 			select taxi.get_aligned_segments(v_trace_record.point, v_direction[1], v_direction[2])
 			loop

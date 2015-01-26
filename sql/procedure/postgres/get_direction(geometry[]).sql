@@ -10,6 +10,7 @@ declare v_x double precision := 0;
 declare v_y double precision := 0;
 declare v_cur_x double precision;
 declare v_cur_y double precision;
+declare v_temp double precision;
 begin
 	for i in 1..array_length(v_points, 1)-1 loop
 		j = i+1;
@@ -18,8 +19,9 @@ begin
 		if(v_cur_x=0 and v_cur_y=0) then
 			continue;
 		end if;
-		v_cur_x = v_cur_x / (|/(v_cur_x*v_cur_x + v_cur_y*v_cur_y));
-		v_cur_y = v_cur_y / (|/(v_cur_x*v_cur_x + v_cur_y*v_cur_y));
+		v_temp = sqrt(v_cur_x*v_cur_x + v_cur_y*v_cur_y);
+		v_cur_x = v_cur_x / v_temp;
+		v_cur_y = v_cur_y / v_temp;
 		v_x = v_x + v_cur_x;
 		v_y = v_y + v_cur_y;
 		v_x = v_x / (|/(v_x*v_x + v_y*v_y));

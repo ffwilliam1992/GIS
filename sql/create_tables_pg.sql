@@ -46,6 +46,13 @@ where
 		'tertiary', 'trunk',
 		'trunk_link','unclassified')
 ;
+drop table if exists taxi.gps_raw;
+create table taxi.gps_raw(
+	id varchar(16),
+	point geometry(Point,4326),
+	state boolean,
+	timestamp timestamp
+);
 drop table if exists taxi.edges;
 CREATE TABLE taxi.edges(
   id bigint NOT NULL,
