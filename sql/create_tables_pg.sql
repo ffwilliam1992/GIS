@@ -79,3 +79,12 @@ CREATE TABLE taxi.edges(
 WITH (
   OIDS=FALSE
 );
+drop table if exists taxi.trips_od;
+create table taxi.trips_od(
+	id bigserial primary key,
+	uid character varying(16),
+	o_point geometry(Point, 4326),
+	o_time timestamp,
+	d_point geometry(Point, 4326),
+	d_time timestamp
+)
