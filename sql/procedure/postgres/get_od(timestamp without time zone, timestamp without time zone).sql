@@ -10,6 +10,7 @@ $BODY$
 declare v_num1 bigint;
 declare v_num2 bigint;
 begin
+	drop table if exists T1;
 	create temp table T1 on commit drop as
 		select
 			row_number() over(partition by id), *
@@ -38,6 +39,8 @@ begin
 			not lag and
 			state
      ;
+
+   	drop table if exists T2;
     create temp table T2 on commit drop as
 		select
 			row_number() over(partition by id), *
