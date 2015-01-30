@@ -6,11 +6,13 @@ CREATE OR REPLACE FUNCTION taxi.get_aligned_segments(
     v_point geometry(Point,4326),
     v_x double precision,
     v_y double precision)
-  RETURNS setof taxi.segments AS
+  RETURNS setof record AS
 $BODY$
+declare v_result record;
+
 begin
 	--return acute segments in the same direction
-	return query
+	--return query
 	select T1.*
 	from
 		taxi.segments T1,
@@ -50,9 +52,15 @@ begin
 		st_distance_sphere(v_point, st_makeline(T5.geom, T6.geom))
 		--abs(st_x(v_point) - (st_x(T5.geom) + st_x(T6.geom))/2),
 		--abs(st_y(v_point) - (st_y(T5.geom) + st_y(T6.geom))/2)
+	into v_result
 	;
+	if(v_result is not null) then
+		return next v_result;
+		return;
+	end if;
 	--in the same direction but not acute
-	return query
+	v_result = null;
+	--return query
 	select T1.*
 	from
 		taxi.segments T1,
@@ -94,9 +102,14 @@ begin
 		st_distance_sphere(v_point, st_makeline(T5.geom, T6.geom))
 		--abs(st_x(v_point) - (st_x(T5.geom) + st_x(T6.geom))/2),
 		--abs(st_y(v_point) - (st_y(T5.geom) + st_y(T6.geom))/2)
+	into v_result
 	;
+	if(v_result is not null) then
+		return next v_result;
+		return;
+	end if;
 	--Those does not bear direction information
-	return query
+	--return query
 	select T1.*
 	from
 		taxi.segments T1,
@@ -128,8 +141,12 @@ begin
 		st_distance_sphere(v_point, st_makeline(T5.geom, T6.geom))
 		--abs(st_x(v_point) - (st_x(T5.geom) + st_x(T6.geom))/2),
 		--abs(st_y(v_point) - (st_y(T5.geom) + st_y(T6.geom))/2)
-	;
-
+	into v_result;
+	
+	if(v_result is not null) then
+		return next v_result;
+		return;
+	end if;
 end;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
