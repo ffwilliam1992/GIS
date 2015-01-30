@@ -3,7 +3,7 @@
 -- DROP FUNCTION taxi.get_direction(geometry[]);
 
 CREATE OR REPLACE FUNCTION taxi.get_direction(v_points geometry[])
-  RETURNS double precision[] AS
+  RETURNS record AS
 $BODY$
 declare j int;
 declare v_x double precision := 0;
@@ -11,6 +11,7 @@ declare v_y double precision := 0;
 declare v_cur_x double precision;
 declare v_cur_y double precision;
 declare v_temp double precision;
+declare v_return record;
 begin
 	for i in 1..array_length(v_points, 1)-1 loop
 		j = i+1;
@@ -27,8 +28,12 @@ begin
 		v_x = v_x / (|/(v_x*v_x + v_y*v_y));
 		v_y = v_y / (|/(v_x*v_x + v_y*v_y));
 	end loop;
+	select
+		v_x, v_y
+	into
+		v_return;
 
-	return Array[v_x, v_y];
+	return v_return;
 end;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
