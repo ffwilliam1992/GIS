@@ -38,7 +38,9 @@ begin
 			+ (st_y(T6.geom)-st_y(T5.geom)) * v_y
 		)/sqrt((st_x(T6.geom)-st_x(T5.geom))*(st_x(T6.geom)-st_x(T5.geom))
 				+ (st_y(T6.geom)-st_y(T5.geom))*(st_y(T6.geom)-st_y(T5.geom)))
-		>= 0.707106 and
+		-->= 0.707106 and
+		>=0.5 and
+
 		--projection is on segment
 		(st_x(v_point)-st_x(T5.geom)) * (st_x(T6.geom)-st_x(T5.geom))
 			+ (st_y(v_point)-st_y(T5.geom)) * (st_y(T6.geom)-st_y(T5.geom)) >= 0 and
@@ -133,12 +135,12 @@ begin
 		abs(st_y(v_point) - (st_y(T5.geom) + st_y(T6.geom))/2) <= 0.0015 and
 		st_distance_sphere(v_point, st_makeline(T5.geom, T6.geom)) < 20
 	order by
+		st_distance_sphere(v_point, st_makeline(T5.geom, T6.geom)),
 		abs((st_x(T6.geom)-st_x(T5.geom))*v_x + (st_y(T6.geom)-st_y(T5.geom))*v_y)
 		/ sqrt(
 			(st_x(T6.geom)-st_x(T6.geom))*(st_x(T6.geom)-st_x(T6.geom))
 			+(st_y(T6.geom)-st_y(T5.geom))*(st_y(T6.geom)-st_y(T5.geom)
-		)) desc,
-		st_distance_sphere(v_point, st_makeline(T5.geom, T6.geom))
+		)) desc
 		--abs(st_x(v_point) - (st_x(T5.geom) + st_x(T6.geom))/2),
 		--abs(st_y(v_point) - (st_y(T5.geom) + st_y(T6.geom))/2)
 	into v_result;
@@ -149,7 +151,7 @@ begin
 	end if;
 end;
 $BODY$
-  LANGUAGE plpgsql IMMUTABLE
+  LANGUAGE plpgsql IMMUTABLE strict
   COST 100;
 ALTER FUNCTION taxi.get_aligned_segments(geometry, double precision, double precision)
   OWNER TO tx;
