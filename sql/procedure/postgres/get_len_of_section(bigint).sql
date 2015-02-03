@@ -6,12 +6,13 @@ CREATE OR REPLACE FUNCTION taxi.get_len_of_section(v_id bigint)
   RETURNS real AS
 $BODY$
 declare v_len real := 0;
-declare v_way record;
+declare v_way_id bigint;
 declare v_section record;
 declare v_line record;
-declare v_way_nodes ways.nodes%type;
-
+declare v_start int;
+declare v_end int;
 begin
+	select  way_id from taxi.section_way where section_id = v_id into v_way_id;
 	--extract section's endpoint
 	select *
 	from
@@ -21,32 +22,37 @@ begin
 	into
 		v_section
 	;
-	--locate indices of endpoints in way's nodes
+	--locate start index
 	select
-		T1.way_id,
-		T1.sequence_id+1 ind_begin,
-		T2.sequence_id+1 ind_end
+		sequence_id+1
 	from
-		way_nodes T1,
-		way_nodes T2
+		way_nodes T1
 	where
-		T1.way_id = T2.way_id and
-		T1.node_id = v_section.from_node and
-		T2.node_id = v_section.to_node
+		T1.way_id = v_way_id and
+		T1.node_id = v_section.from_node
+	order by
+		sequence_id
+	limit 1
 	into
-		v_way
+		v_start
 	;
-	select 
-		nodes
+	--locate end index
+	select
+		sequence_id+1
 	from
-		ways
+		way_nodes T1
 	where
-		id = v_way.way_id
+		T1.way_id = v_way_id and
+		T1.node_id = v_section.to_node
+	order by
+		sequence_id desc
+	limit 1
 	into
-		v_way_nodes
+		v_end
 	;
+	
 	--sum the length of intermediate segments
-	while v_way.ind_begin < v_way.ind_end loop
+	while v_start < v_end loop
 		select 
 			T1.geom startpoint,
 			T2.geom endpoint
@@ -55,13 +61,13 @@ begin
 			nodes T2,
 			ways T3
 		where
-			T3.id = v_way.way_id and
-			T1.id = v_way_nodes[v_way.ind_begin] and
-			T2.id = v_way_nodes[v_way.ind_end]
+			T3.id = v_way_id and
+			T1.id = T3.nodes[v_start] and
+			T2.id = T3.nodes[v_end]
 		into
 			v_line
 		;
-		v_way.ind_begin = v_way.ind_begin+1;
+		v_start = v_start+1;
 		v_len =
 			v_len 
 			+ st_distance_sphere(v_line.startpoint, v_line.endpoint);
