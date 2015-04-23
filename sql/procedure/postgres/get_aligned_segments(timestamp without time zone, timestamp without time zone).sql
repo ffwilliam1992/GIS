@@ -8,13 +8,12 @@ CREATE OR REPLACE FUNCTION taxi.get_aligned_segments(
  )RETURNS table(id varchar(16), point geometry(Point,4326), segment_id bigint) AS
 $BODY$
 declare v_result record;
-declare v_traces refcursor;
 declare v_trace_record record;
 declare v_pre_id taxi.gps_raw.id%type;
 declare v_pre_trace geometry(Point,4326)[];
 declare v_nxt_trace geometry(Point,4326)[];
 declare v_pre_state boolean := false;
-declare v_direction double precision[];
+declare v_direction record;
 declare v_aligned_segment record;
 begin
 	for v_trace_record in
@@ -35,6 +34,7 @@ begin
 			T.id, timestamp
 	)
 	loop
+		--check whether new id occurs
 		if(v_trace_record.id <> v_pre_id or v_pre_id is null) then
 			v_pre_state = false;
 			v_pre_trace = null;
@@ -67,10 +67,13 @@ begin
 				v_pre_trace = array_append(v_pre_trace, v_trace_record.point);
 			end if;
 			raise notice 'v_trace_record %', array_length(v_pre_trace, 1);
-			select * from taxi.get_direction(v_pre_trace) into v_direction;
+			select * 
+			from 
+				taxi.get_direction(v_pre_trace) as (x double precision, y double precision) 
+			into v_direction;
 			raise notice 'direction %', v_direction;
 			for v_aligned_segment in
-			select taxi.get_aligned_segments(v_trace_record.point, v_direction[1], v_direction[2])
+			select * from taxi.get_aligned_segments(v_trace_record.point, v_direction.x, v_direction.y) as (id bigint, from_node bigint, to_node bigint)
 			loop
 				return query
 				select 
@@ -83,9 +86,12 @@ begin
 		elseif (v_pre_state and v_trace_record.state) then
 			v_pre_trace = v_pre_trace[2:array_length(v_pre_trace, 1)];
 			v_pre_trace = array_append(v_pre_trace, v_trace_record.point);
-			select * from taxi.get_direction(v_pre_trace) into v_direction;
+			select * 
+			from 
+				taxi.get_direction(v_pre_trace) as (x double precision, y double precision) 
+			into v_direction;
 			for v_aligned_segment in
-			select taxi.get_aligned_segments(v_trace_record.point, v_direction[1], v_direction[2])
+			select * from taxi.get_aligned_segments(v_trace_record.point, v_direction.x, v_direction.y) as (id bigint, from_node bigint, to_node bigint)
 			loop
 				return query
 				select 
