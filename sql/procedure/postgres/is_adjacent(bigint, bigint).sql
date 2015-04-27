@@ -18,6 +18,17 @@ begin
 			target = v2
 	)>0) then
 		return true;
+	elseif((
+		select
+			count(*)
+		from
+			taxi.edges
+		where
+			source = v2 and
+			target = v1 and
+			rlen = len
+	)>0) then
+		return true;
 	else
 		return false;
 	end if

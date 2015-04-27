@@ -18,7 +18,7 @@ begin
 		st_y(T4.geom) y1,
 		st_x(T5.geom) x2,
 		st_y(T5.geom) y2,		
-		st_makeline(T4.geom, T5.geom) the_geom,
+		taxi.get_geometry_of_section(T1.id) the_geom,
 		--default maxspeed = 60kph
 		case when T3.tags ? 'maxspeed' then
 				case when T3.tags->'maxspeed' like '%mph' then

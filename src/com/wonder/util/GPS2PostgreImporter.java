@@ -34,7 +34,7 @@ public class GPS2PostgreImporter {
 				int cnt = 0;
 				while ((line = input.readLine()) != null) {
 					words = line.split(",");
-					insert_into_stmt.setObject(1, words[0],
+					insert_into_stmt.setObject(1, words[0].substring(1, words[0].length()-1),
 							java.sql.Types.VARCHAR);
 					insert_into_stmt.setObject(2, words[1],
 							java.sql.Types.DOUBLE);
@@ -42,7 +42,7 @@ public class GPS2PostgreImporter {
 							java.sql.Types.DOUBLE);
 					insert_into_stmt.setObject(4, words[3],
 							java.sql.Types.BOOLEAN);
-					insert_into_stmt.setObject(5, words[4], java.sql.Types.BIGINT);
+					insert_into_stmt.setObject(5, words[4]);
 					insert_into_stmt.addBatch();
 					++cnt;
 					if (cnt % batch_size == 0) {
@@ -66,6 +66,7 @@ public class GPS2PostgreImporter {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			e.getNextException().printStackTrace();
 		}
 	}
 

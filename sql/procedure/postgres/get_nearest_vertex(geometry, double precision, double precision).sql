@@ -16,7 +16,7 @@ begin
 		taxi.edges_vertices_pgr
 	where
 		(st_x(the_geom)-st_x(v_point))*v_x
-		+(st_y(the_geom)-st_y(v_point))*v_y > 0
+		+(st_y(the_geom)-st_y(v_point))*v_y > 0.1
 	order by
 		st_distance_sphere(v_point, the_geom)
 	limit 1
