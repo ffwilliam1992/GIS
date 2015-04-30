@@ -12,7 +12,7 @@ public class DBConnectionPoolFactory {
 	public static DBConnectionPool getInstance()
 	{
 		if (pool == null)
-			pool = new DBConnectionPool();
+			pool = new DBConnectionPool(DBConnectionPool.Vendor.POSTGRESQL);
 		return pool;
 	}
 

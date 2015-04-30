@@ -8,6 +8,7 @@ $BODY$
 declare v_record record;
 declare v_pre_state boolean default false;
 declare v_trip_id bigint default 0;
+declare v_pre_id taxi.gps_raw.id%type default '';
 declare	v_cur no scroll cursor for
 		select 
 			id, state, timestamp
@@ -20,6 +21,10 @@ declare	v_cur no scroll cursor for
 begin
 	for v_record in v_cur
 	loop
+		if(v_pre_id <> v_record.id) then
+			v_pre_id = v_record.id;
+			v_pre_state = false;
+		end if;
 		--continuous uncarried
 		if(not v_pre_state and not v_record.state) then
 			continue;

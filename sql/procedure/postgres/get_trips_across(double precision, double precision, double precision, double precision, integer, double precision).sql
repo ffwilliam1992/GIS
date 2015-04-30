@@ -1,13 +1,14 @@
-﻿-- Function: taxi.get_trips_across(double precision, double precision, double precision, double precision, integer)
+﻿-- Function: taxi.get_trips_across(double precision, double precision, double precision, double precision, integer, double precision)
 
--- DROP FUNCTION taxi.get_trips_across(double precision, double precision, double precision, double precision, integer);
+-- DROP FUNCTION taxi.get_trips_across(double precision, double precision, double precision, double precision, integer, double precision);
 
 CREATE OR REPLACE FUNCTION taxi.get_trips_across(
     v_lng1 double precision,
     v_lat1 double precision,
     v_lng2 double precision,
     v_lat2 double precision,
-    v_limit integer DEFAULT 1000)
+    v_limit integer,
+    v_radius double precision DEFAULT 100)
   RETURNS SETOF bigint AS
 $BODY$
 declare v_record record;
@@ -21,7 +22,7 @@ declare v_cur no scroll cursor for
 	from
 		taxi.gps_raw
 	where
-		trip_id is not null
+		trip_id < 10000
 	order by
 		trip_id, timestamp
 ;
@@ -56,5 +57,5 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100
   ROWS 1000;
-ALTER FUNCTION taxi.get_trips_across(double precision, double precision, double precision, double precision, integer)
+ALTER FUNCTION taxi.get_trips_across(double precision, double precision, double precision, double precision, integer, double precision)
   OWNER TO tx;

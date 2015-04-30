@@ -87,4 +87,39 @@ create table taxi.trips_od(
 	o_time timestamp,
 	d_point geometry(Point, 4326),
 	d_time timestamp
-)
+);
+-- Table: taxi.grids
+
+DROP TABLE taxi.grids;
+CREATE TABLE taxi.grids
+(
+  id bigint NOT NULL,
+  x double precision,
+  y double precision,
+  o_occur integer,
+  d_occur integer,
+  CONSTRAINT grids_pkey PRIMARY KEY (id)
+);
+
+-- Table: taxi.bounds
+
+DROP TABLE taxi.bounds;
+CREATE TABLE taxi.bounds
+(
+  id integer NOT NULL,
+  alias character varying,
+  x_min double precision,
+  y_min double precision,
+  x_max double precision,
+  y_max double precision,
+  CONSTRAINT bounds_pkey PRIMARY KEY (id)
+);
+
+DROP TABLE taxi.trips_od_grid;
+CREATE TABLE taxi.trips_od_grid
+(
+  id bigint primary key,
+  o_grid bigint,
+  d_grid bigint
+);
+
